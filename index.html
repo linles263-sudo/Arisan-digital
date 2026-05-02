@@ -101,10 +101,15 @@
   <!-- CREDIT SEMB -->
   <div class="text-center text-white text-xs opacity-60 pb-2">Made with ❤️ by Semb 🚬</div>
 
-  <!-- RESET -->
-  <button onclick="resetPutaran()" class="w-full bg-red-500 text-white font-bold py-3 rounded-xl mb-2 text-sm">
-    🔄 RESET PUTARAN BARU
-  </button>
+  <!-- RESET DOUBLE -->
+  <div class="grid grid-cols-2 gap-2 mb-2">
+    <button onclick="resetPutaran()" class="w-full bg-orange-500 text-white font-bold py-3 rounded-xl text-sm">
+      🔄 RESET PUTARAN
+    </button>
+    <button onclick="hapusSemuaData()" class="w-full bg-red-600 text-white font-bold py-3 rounded-xl text-sm">
+      🗑️ HAPUS SEMUA
+    </button>
+  </div>
   
 </div>
 
@@ -232,11 +237,17 @@ async function kocokArisan() {
 }
 
 function resetPutaran() {
-  if(!confirm('Reset semua? Anggota yang sudah menang bisa ikut lagi.')) return;
+  if(!confirm('Reset putaran? Anggota yang sudah menang bisa ikut lagi.')) return;
   data.anggota = [...data.anggota,...data.pemenang.map(p => p.nama)];
   data.pemenang = [];
   data.putaran = 0;
   saveData();
+}
+
+function hapusSemuaData() {
+  if(!confirm('YAKIN HAPUS SEMUA? Nama grup, logo, anggota bakal hilang semua. Ga bisa dibalikin!')) return;
+  localStorage.removeItem('arisanProMax');
+  location.reload();
 }
 
 function gantiTema() {
@@ -322,4 +333,4 @@ function render() {
 render();
 </script>
 </body>
-        </html>
+      </html>
