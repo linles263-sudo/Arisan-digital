@@ -25,7 +25,7 @@
 .confetti { position: fixed; width: 8px; height: 8px; animation: confetti-fall 3s linear; z-index: 9999; }
   @keyframes confetti-fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
   button:active { transform: scale(0.97); }
- .modal { background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
+.modal { background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
 </style>
 </head>
 <body id="body" class="tema-ungu min-h-screen w-screen">
@@ -51,7 +51,7 @@
         <img id="logoRT" src="https://cdn-icons-png.flaticon.com/512/4320/4320371.png" class="w-9 h-9 rounded-full bg-white p-1 shrink-0">
         <div class="flex-1 min-w-0">
           <h1 id="namaGrup" class="text-base font-black leading-tight">ARISAN DIGITAL PRO MAX</h1>
-          <p class="text-xs opacity-80">Anti Curang 100%</p>
+          <p class="text-xs opacity-80">Anti Curang + Anti Nunggak</p>
         </div>
       </div>
       <div class="flex gap-1">
@@ -85,6 +85,7 @@
   <button id="btnKocok" onclick="kocokArisan()" class="w-full bg-white text-purple-600 font-black text-base py-4 rounded-xl shadow-2xl mb-2 transition">
     🎲 KOCOK SEKARANG
   </button>
+  <div class="text-center text-white text-xs opacity-70 mb-2">*Hanya anggota yang ✅ Lunas yang ikut dikocok</div>
 
   <!-- HASIL MENANG -->
   <div id="hasilMenang" class="glass rounded-xl p-5 mb-2 text-white text-center hidden">
@@ -133,7 +134,7 @@
 
 <!-- MODAL HISTORY -->
 <div id="modalHistory" class="fixed inset-0 modal z-50 hidden items-center justify-center p-4">
-  <div class="glass rounded-xl p-4 w-full max-w-sm text-white max-h-[80vh] flex flex-col">
+  <div class="glass rounded-xl p-4 w-full max-w-sm text-white max-h-96 flex flex-col">
     <div class="flex justify-between items-center mb-3">
       <h2 class="text-lg font-black">📜 History Kocokan</h2>
       <button onclick="tutupHistory()" class="bg-red-500 px-3 py-1 rounded-lg text-sm">Tutup</button>
@@ -267,7 +268,11 @@ function toggleBayar(nama) {
 }
 
 async function kocokArisan() {
+  // ATURAN BARU: CUMA YANG LUNAS YANG DIKOCOK
+  const yangLunas = data.anggota.filter(a => a.bayar);
+
   if(data.anggota.length === 0) return alert('Tambah anggota dulu!');
+  if(yangLunas.length === 0) return alert('Yang lunas belum ada! Tagih dulu yang nunggak 🚬');
   
   const btn = document.getElementById('btnKocok');
   btn.disabled = true;
@@ -279,10 +284,14 @@ async function kocokArisan() {
   
   await new Promise(r => setTimeout(r, 3000));
   
-  const randomIndex = Math.floor(Math.random() * data.anggota.length);
-  const pemenang = data.anggota[randomIndex];
+  // KOCOK CUMA DARI YANG LUNAS
+  const randomIndex = Math.floor(Math.random() * yangLunas.length);
+  const pemenang = yangLunas[randomIndex];
   
-  data.anggota.splice(randomIndex, 1);
+  // HAPUS DARI LIST ANGGOTA ASLI
+  const indexAsli = data.anggota.findIndex(a => a.nama === pemenang.nama);
+  data.anggota.splice(indexAsli, 1);
+  
   data.pemenang.push({ nama: pemenang.nama, putaran: data.putaran + 1, bayar: pemenang.bayar });
   data.history.push({
     nama: pemenang.nama,
