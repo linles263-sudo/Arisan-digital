@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARISAN DIGITAL PRO</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+    h1 { text-align: center; color: #764ba2; margin-bottom: 5px; }
+    .subtitle { text-align: center; color: #666; margin-bottom: 20px; font-size: 14px; }
+    .stats { display: flex; justify-content: space-around; background: #f8f9fa; padding: 15px; border-radius: 12px; margin-bottom: 20px; }
+    .stat-box { text-align: center; }
+    .stat-num { font-size: 24px; font-weight: bold; color: #667eea; }
+    .stat-label { font-size: 12px; color: #666; }
+    .kocok-area { text-align: center; margin: 30px 0; }
+    #btnKocok { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 20px 50px; font-size: 20px; font-weight: bold; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 15px rgba(118,75,162,0.4); transition: 0.3s; }
+    #btnKocok:active { transform: scale(0.95); }
+    #btnKocok:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; }
+    #hasilKocok { margin-top: 20px; font-size: 28px; font-weight: bold; color: #764ba2; min-height: 40px; }
+    .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+    #inputNama { flex: 1; padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; }
+    #btnTambah { background: #28a745; color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+    .list-box { background: #f8f9fa; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
+    .list-title { font-weight: bold; margin-bottom: 10px; color: #764ba2; }
+    .anggota-item { padding: 8px; background: white; margin: 5px 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .sudah-dapat { opacity: 0.6; text-decoration: line-through; }
+    .badge { background: #667eea; color: white; padding: 3px 8px; border-radius: 20px; font-size: 12px; }
+    .btn-hapus { background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 5px; font-size: 12px; cursor: pointer; }
+    .btn-reset { width: 100%; background: #dc3545; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+    .shake { animation: shake 0.5s; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 ARISAN DIGITAL PRO</h1>
+    <p class="subtitle">Kocok Online Anti Curang - Bu RT Senang</p>
+
+    <div class="stats">
+      <div class="stat-box">
+        <div class="stat-num" id="totalAnggota">0</div>
+        <div class="stat-label">Total Anggota</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="sudahDapat">0</div>
+        <div class="stat-label">Sudah Dapat</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="sisaAnggota">0</div>
+        <div class="stat-label">Sisa</div>
+      </div>
+    </div>
+
+    <div class="kocok-area">
+      <button id="btnKocok">🎲 KOCOK SEKARANG</button>
+      <div id="hasilKocok"></div>
+    </div>
+
+    <div class="input-group">
+      <input type="text" id="inputNama" placeholder="Masukin nama anggota baru...">
+      <button id="btnTambah">+ Tambah</button>
+    </div>
+
+    <div class="list-box">
+      <div class="list-title">📋 Belum Dapat Arisan</div>
+      <div id="listBelum"></div>
+    </div>
+
+    <div class="list-box">
+      <div class="list-title">✅ Sudah Dapat Arisan</div>
+      <div id="listSudah"></div>
+    </div>
+
+    <button class="btn-reset" onclick="resetArisan()">🔄 RESET PUTARAN BARU</button>
+  </div>
+
+  <audio id="drumroll" src="https://www.soundjay.com/misc/sounds/drum-roll-01.mp3"></audio>
+  <audio id="winner" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
+
+  <script>
+    let data = JSON.parse(localStorage.getItem('arisanData')) || { anggota: [], pemenang: [] };
+
+    function save() { localStorage.setItem('arisanData', JSON.stringify(data)); render(); }
+    
+    function render() {
+      const belum = data.anggota.filter(a => !data.pemenang.find(p => p.nama === a));
+      const sudah = data.pemenang;
+      
+      document.getElementById('totalAnggota').textContent = data.anggota.length;
+      document.getElementById('sudahDapat').textContent = sudah.length;
+      document.getElementById('sisaAnggota').textContent = belum.length;
+      document.getElementById('btnKocok').disabled = belum.length === 0;
+
+      document.getElementById('listBelum').innerHTML = belum.length ? belum.map(nama => `
+        <div class="anggota-item">
+          <span>${nama}</span>
+          <button class="btn-hapus" onclick="hapusAnggota('${nama}')">Hapus</button>
+        </div>
+      `).join('') : '<div style="text-align:center;color:#999;">Semua sudah dapat</div>';
+
+      document.getElementById('listSudah').innerHTML = sudah.length ? sudah.map((p, i) => `
+        <div class="anggota-item sudah-dapat">
+          <span>${p.nama}</span>
+          <span class="badge">Putaran ${i+1}</span>
+        </div>
+      `).join('') : '<div style="text-align:center;color:#999;">Belum ada pemenang</div>';
+    }
+
+    function tambahAnggota() {
+      const nama = document.getElementById('inputNama').value.trim();
+      if (!nama) return alert('Isi nama dulu Prof!');
+      if (data.anggota.includes(nama)) return alert('Nama udah ada!');
+      data.anggota.push(nama);
+      document.getElementById('inputNama').value = '';
+      save();
+    }
+
+    function hapusAnggota(nama) {
+      if (!confirm(`Hapus ${nama} dari arisan?`)) return;
+      data.anggota = data.anggota.filter(a => a !== nama);
+      data.pemenang = data.pemenang.filter(p => p.nama !== nama);
+      save();
+    }
+
+    function kocokArisan() {
+      const belum = data.anggota.filter(a => !data.pemenang.find(p => p.nama === a));
+      if (belum.length === 0) return alert('Semua anggota sudah dapat arisan!');
+      
+      const btn = document.getElementById('btnKocok');
+      const hasil = document.getElementById('hasilKocok');
+      btn.disabled = true;
+      
+      // Efek drumroll
+      document.getElementById('drumroll').play();
+      hasil.textContent = 'Dug... Dug... Dug...';
+      hasil.classList.add('shake');
+      
+      let counter = 0;
+      const interval = setInterval(() => {
+        hasil.textContent = belum[Math.floor(Math.random() * belum.length)];
+        counter++;
+        if (counter > 20) {
+          clearInterval(interval);
+          const pemenang = belum[Math.floor(Math.random() * belum.length)];
+          hasil.textContent = `🎉 ${pemenang} 🎉`;
+          hasil.classList.remove('shake');
+          document.getElementById('winner').play();
+          
+          setTimeout(() => {
+            data.pemenang.push({ nama: pemenang, tanggal: new Date().toLocaleDateString('id-ID') });
+            save();
+            btn.disabled = false;
+          }, 1500);
+        }
+      }, 100);
+    }
+
+    function resetArisan() {
+      if (!confirm('Yakin mau reset? Semua data pemenang bakal dihapus. Anggota tetap ada.')) return;
+      data.pemenang = [];
+      save();
+      document.getElementById('hasilKocok').textContent = '';
+    }
+
+    document.getElementById('btnTambah').onclick = tambahAnggota;
+    document.getElementById('btnKocok').onclick = kocokArisan;
+    document.getElementById('inputNama').onkeypress = e => e.key === 'Enter' && tambahAnggota();
+    
+    render();
+  </script>
+</body>
+  </html>
