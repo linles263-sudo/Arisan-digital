@@ -3,13 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>ARISAN DIGITAL PRO</title>
+<title>ARISAN DIGITAL PRO MAX</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap');
     * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Poppins', sans-serif; overflow-x: hidden; }
+  html, body { width: 100%; overflow-x: hidden; }
+  body { font-family: 'Poppins', sans-serif; }
 .tema-ungu { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
 .tema-ijo { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
 .tema-pink { background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%); }
@@ -18,93 +19,91 @@
 .shake { animation: shake 0.5s infinite; }
   @keyframes shake {
     0%,100% { transform: translateX(0) rotate(0deg); }
-    25% { transform: translateX(-8px) rotate(-3deg); }
-    75% { transform: translateX(8px) rotate(3deg); }
+    25% { transform: translateX(-6px) rotate(-2deg); }
+    75% { transform: translateX(6px) rotate(2deg); }
   }
 .confetti { position: fixed; width: 8px; height: 8px; animation: confetti-fall 3s linear; z-index: 9999; }
   @keyframes confetti-fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
-  button:active { transform: scale(0.95); }
+  button:active { transform: scale(0.97); }
 </style>
 </head>
-<body id="body" class="tema-ungu min-h-screen w-full">
-<div class="w-full max-w-lg mx-auto p-3">
+<body id="body" class="tema-ungu min-h-screen w-screen">
+<div class="w-full p-2">
   
   <!-- HEADER PREMIUM -->
-  <div class="glass rounded-2xl p-4 mb-3 text-white">
-    <div class="flex justify-between items-center mb-3">
-      <div class="flex items-center gap-2 flex-1">
-        <img id="logoRT" src="https://cdn-icons-png.flaticon.com/512/4320/4320371.png" class="w-10 h-10 rounded-full bg-white p-1">
+  <div class="glass rounded-xl p-3 mb-2 text-white">
+    <div class="flex justify-between items-start mb-3 gap-2">
+      <div class="flex items-center gap-2 flex-1 min-w-0">
+        <img id="logoRT" src="https://cdn-icons-png.flaticon.com/512/4320/4320371.png" class="w-9 h-9 rounded-full bg-white p-1 shrink-0">
         <div class="flex-1 min-w-0">
-          <h1 id="namaGrup" class="text-lg font-black leading-tight truncate">ARISAN DIGITAL PRO</h1>
-          <p class="text-[10px] opacity-80">Premium Edition - Anti Curang 100%</p>
+          <h1 id="namaGrup" class="text-base font-black leading-tight">ARISAN DIGITAL PRO MAX</h1>
+          <p class="text- opacity-80">Anti Curang 100%</p>
         </div>
       </div>
-      <button onclick="gantiTema()" class="glass px-3 py-2 rounded-xl text-xs font-bold shrink-0">🎨</button>
+      <button onclick="gantiTema()" class="glass px-2 py-2 rounded-lg text-xs font-bold shrink-0">🎨</button>
     </div>
     
     <!-- STATS -->
-    <div class="grid grid-cols-4 gap-2 text-center">
-      <div class="glass rounded-lg p-2">
-        <div id="totalAnggota" class="text-xl font-black">0</div>
-        <div class="text-[10px]">Anggota</div>
+    <div class="grid grid-cols-4 gap-1.5 text-center">
+      <div class="glass rounded-lg p-1.5">
+        <div id="totalAnggota" class="text-lg font-black">0</div>
+        <div class="text-">Anggota</div>
       </div>
-      <div class="glass rounded-lg p-2">
-        <div id="sudahDapat" class="text-xl font-black">0</div>
-        <div class="text-[10px]">Menang</div>
+      <div class="glass rounded-lg p-1.5">
+        <div id="sudahDapat" class="text-lg font-black">0</div>
+        <div class="text-">Menang</div>
       </div>
-      <div class="glass rounded-lg p-2">
-        <div id="sisa" class="text-xl font-black">0</div>
-        <div class="text-[10px]">Sisa</div>
+      <div class="glass rounded-lg p-1.5">
+        <div id="sisa" class="text-lg font-black">0</div>
+        <div class="text-">Sisa</div>
       </div>
-      <div class="glass rounded-lg p-2">
-        <div id="putaran" class="text-xl font-black">0</div>
-        <div class="text-[10px]">Putaran</div>
+      <div class="glass rounded-lg p-1.5">
+        <div id="putaran" class="text-lg font-black">0</div>
+        <div class="text-">Putaran</div>
       </div>
     </div>
   </div>
 
   <!-- TOMBOL KOCOK -->
-  <button id="btnKocok" onclick="kocokArisan()" class="w-full bg-white text-purple-600 font-black text-lg py-5 rounded-2xl shadow-2xl mb-3 transition">
+  <button id="btnKocok" onclick="kocokArisan()" class="w-full bg-white text-purple-600 font-black text-base py-4 rounded-xl shadow-2xl mb-2 transition">
     🎲 KOCOK SEKARANG
   </button>
 
   <!-- HASIL MENANG -->
-  <div id="hasilMenang" class="glass rounded-2xl p-6 mb-3 text-white text-center hidden">
+  <div id="hasilMenang" class="glass rounded-xl p-5 mb-2 text-white text-center hidden">
     <div class="text-xs mb-1">🎉 SELAMAT KEPADA 🎉</div>
-    <div id="namaPemenang" class="text-3xl font-black mb-1 break-words"></div>
-    <div class="text-[10px] opacity-80">Putaran ke-<span id="putaranMenang"></span></div>
+    <div id="namaPemenang" class="text-2xl font-black mb-1 break-words"></div>
+    <div class="text- opacity-80">Putaran ke-<span id="putaranMenang"></span></div>
   </div>
 
-  <!-- TAMBAH ANGGOTA -->
-  <div class="glass rounded-2xl p-3 mb-3">
-    <div class="flex gap-2 mb-2">
-      <input id="inputNama" type="text" placeholder="Nama anggota..." class="flex-1 px-3 py-3 rounded-xl text-black text-sm" onkeypress="if(event.key==='Enter') tambahAnggota()">
-      <button onclick="tambahAnggota()" class="bg-green-500 text-white px-4 py-3 rounded-xl font-bold text-sm whitespace-nowrap">+ Tambah</button>
-    </div>
-    <div class="grid grid-cols-3 gap-2 text-[11px]">
-      <button onclick="ubahNamaGrup()" class="glass text-white px-2 py-2 rounded-lg">✏️ Grup</button>
-      <button onclick="uploadLogo()" class="glass text-white px-2 py-2 rounded-lg">🖼️ Logo</button>
-      <button onclick="exportExcel()" class="glass text-white px-2 py-2 rounded-lg">📊 Export</button>
+  <!-- TAMBAH ANGGOTA - INI YANG GUA BENERIN -->
+  <div class="glass rounded-xl p-3 mb-2">
+    <input id="inputNama" type="text" placeholder="Nama anggota..." class="w-full px-3 py-3 rounded-xl text-black text-sm mb-2" onkeypress="if(event.key==='Enter') tambahAnggota()">
+    <button onclick="tambahAnggota()" class="w-full bg-green-500 text-white py-3 rounded-xl font-bold text-sm mb-2">+ TAMBAH ANGGOTA</button>
+    <div class="grid grid-cols-3 gap-1.5 text-">
+      <button onclick="ubahNamaGrup()" class="glass text-white px-1 py-2 rounded-lg">✏️ Grup</button>
+      <button onclick="uploadLogo()" class="glass text-white px-1 py-2 rounded-lg">🖼️ Logo</button>
+      <button onclick="exportExcel()" class="glass text-white px-1 py-2 rounded-lg">📊 Export</button>
     </div>
   </div>
 
   <!-- LIST ANGGOTA -->
-  <div class="glass rounded-2xl p-3 mb-3 text-white">
-    <h3 class="font-bold mb-2 text-sm">📋 Belum Dapat Arisan</h3>
-    <div id="listBelum" class="space-y-2 max-h-48 overflow-y-auto"></div>
+  <div class="glass rounded-xl p-3 mb-2 text-white">
+    <h3 class="font-bold mb-2 text-xs">📋 Belum Dapat Arisan</h3>
+    <div id="listBelum" class="space-y-1.5 max-h-40 overflow-y-auto"></div>
   </div>
 
-  <div class="glass rounded-2xl p-3 mb-3 text-white">
-    <h3 class="font-bold mb-2 text-sm">✅ Sudah Dapat Arisan</h3>
-    <div id="listSudah" class="space-y-2 max-h-48 overflow-y-auto"></div>
+  <div class="glass rounded-xl p-3 mb-2 text-white">
+    <h3 class="font-bold mb-2 text-xs">✅ Sudah Dapat Arisan</h3>
+    <div id="listSudah" class="space-y-1.5 max-h-40 overflow-y-auto"></div>
   </div>
 
   <!-- RESET -->
-  <button onclick="resetPutaran()" class="w-full bg-red-500 text-white font-bold py-3 rounded-2xl mb-2 text-sm">
+  <button onclick="resetPutaran()" class="w-full bg-red-500 text-white font-bold py-3 rounded-xl mb-2 text-sm">
     🔄 RESET PUTARAN BARU
   </button>
   
-  <div class="text-center text-white text-[10px] opacity-60 pb-4">Made with ❤️ for Bu RT Senang</div>
+  <div class="text-center text-white text- opacity-60 pb-3">Made with ❤️ for Bu RT Senang</div>
 </div>
 
 <input type="file" id="inputLogo" accept="image/*" class="hidden" onchange="gantiLogo(event)">
@@ -121,9 +120,9 @@ let data = JSON.parse(localStorage.getItem('arisanProMax')) || {
 
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-// SUARA KOCOK GELAS REAL - LEBIH KERAS
+// SUARA KOCOK GELAS PLASTIK REAL BANGET
 function suaraKocokGelas() {
-  for(let i = 0; i < 20; i++) {
+  for(let i = 0; i < 25; i++) {
     setTimeout(() => {
       const osc = audioContext.createOscillator();
       const gain = audioContext.createGain();
@@ -132,37 +131,37 @@ function suaraKocokGelas() {
       filter.connect(gain);
       gain.connect(audioContext.destination);
       osc.type = 'square';
-      osc.frequency.value = 150 + Math.random() * 500;
-      filter.type = 'bandpass';
-      filter.frequency.value = 800;
-      gain.gain.setValueAtTime(0.4, audioContext.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
+      osc.frequency.value = 100 + Math.random() * 600;
+      filter.type = 'highpass';
+      filter.frequency.value = 500;
+      gain.gain.setValueAtTime(0.5, audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.06);
       osc.start();
-      osc.stop(audioContext.currentTime + 0.08);
-    }, i * 150);
+      osc.stop(audioContext.currentTime + 0.06);
+    }, i * 120);
   }
 }
 
-// SUARA DRUM ROLL PANJANG
+// SUARA DRUM ROLL TEGANG
 function suaraDrumRoll() {
   const osc = audioContext.createOscillator();
   const gain = audioContext.createGain();
   osc.connect(gain);
   gain.connect(audioContext.destination);
   osc.type = 'sawtooth';
-  osc.frequency.value = 80;
-  gain.gain.setValueAtTime(0.6, audioContext.currentTime);
+  osc.frequency.value = 60;
+  gain.gain.setValueAtTime(0.7, audioContext.currentTime);
   osc.start();
   setTimeout(() => {
-    osc.frequency.exponentialRampToValueAtTime(40, audioContext.currentTime + 2.5);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2.5);
+    osc.frequency.exponentialRampToValueAtTime(30, audioContext.currentTime + 2.8);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2.8);
   }, 100);
-  setTimeout(() => osc.stop(), 2600);
+  setTimeout(() => osc.stop(), 2900);
 }
 
-// SUARA JENG JENG WINNER EPIC
+// SUARA JENG JENG JUARA
 function suaraJengJeng() {
-  const notes = [523, 659, 784, 1047, 784, 1047];
+  const notes = [523, 659, 784, 1047, 1319, 1047];
   notes.forEach((freq, i) => {
     setTimeout(() => {
       const osc = audioContext.createOscillator();
@@ -171,11 +170,11 @@ function suaraJengJeng() {
       gain.connect(audioContext.destination);
       osc.type = 'triangle';
       osc.frequency.value = freq;
-      gain.gain.setValueAtTime(0.6, audioContext.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+      gain.gain.setValueAtTime(0.7, audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
       osc.start();
-      osc.stop(audioContext.currentTime + 0.4);
-    }, i * 120);
+      osc.stop(audioContext.currentTime + 0.5);
+    }, i * 100);
   });
 }
 
@@ -206,13 +205,11 @@ async function kocokArisan() {
   btn.innerHTML = '🎲 MENGOCOK...';
   btn.classList.add('shake');
   
-  // PLAY SUARA KOCOK + DRUM
   suaraKocokGelas();
   suaraDrumRoll();
   
   await new Promise(r => setTimeout(r, 3000));
   
-  // PILIH PEMENANG
   const randomIndex = Math.floor(Math.random() * data.anggota.length);
   const pemenang = data.anggota[randomIndex];
   
@@ -220,7 +217,6 @@ async function kocokArisan() {
   data.pemenang.push({ nama: pemenang, putaran: data.putaran + 1 });
   data.putaran++;
   
-  // SUARA JENG JENG + CONFETTI
   suaraJengJeng();
   confetti();
   
@@ -248,7 +244,7 @@ function gantiTema() {
   const tema = ['tema-ungu', 'tema-ijo', 'tema-pink', 'tema-emas'];
   const current = tema.indexOf(data.tema);
   data.tema = tema[(current + 1) % tema.length];
-  document.getElementById('body').className = data.tema + ' min-h-screen w-full';
+  document.getElementById('body').className = data.tema + ' min-h-screen w-screen';
   saveData();
 }
 
@@ -278,15 +274,15 @@ function gantiLogo(e) {
 function exportExcel() {
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.json_to_sheet([
-  ...data.pemenang.map((p, i) => ({ No: i+1, Nama: p.nama, Status: 'Menang', Putaran: p.putaran })),
-  ...data.anggota.map((a, i) => ({ No: data.pemenang.length + i + 1, Nama: a, Status: 'Belum', Putaran: '-' }))
+ ...data.pemenang.map((p, i) => ({ No: i+1, Nama: p.nama, Status: 'Menang', Putaran: p.putaran })),
+ ...data.anggota.map((a, i) => ({ No: data.pemenang.length + i + 1, Nama: a, Status: 'Belum', Putaran: '-' }))
   ]);
   XLSX.utils.book_append_sheet(wb, ws, 'Laporan Arisan');
   XLSX.writeFile(wb, `Laporan-${data.grup}-${Date.now()}.xlsx`);
 }
 
 function confetti() {
-  for(let i = 0; i < 60; i++) {
+  for(let i = 0; i < 70; i++) {
     setTimeout(() => {
       const div = document.createElement('div');
       div.className = 'confetti';
@@ -294,14 +290,14 @@ function confetti() {
       div.style.background = `hsl(${Math.random()*360}, 100%, 50%)`;
       document.body.appendChild(div);
       setTimeout(() => div.remove(), 3000);
-    }, i * 25);
+    }, i * 20);
   }
 }
 
 function render() {
   document.getElementById('namaGrup').textContent = data.grup;
   document.getElementById('logoRT').src = data.logo;
-  document.getElementById('body').className = data.tema + ' min-h-screen w-full';
+  document.getElementById('body').className = data.tema + ' min-h-screen w-screen';
   document.getElementById('totalAnggota').textContent = data.anggota.length + data.pemenang.length;
   document.getElementById('sudahDapat').textContent = data.pemenang.length;
   document.getElementById('sisa').textContent = data.anggota.length;
@@ -309,20 +305,22 @@ function render() {
   
   document.getElementById('listBelum').innerHTML = data.anggota.length? 
     data.anggota.map(a => `
-      <div class="glass rounded-xl p-2 flex justify-between items-center text-sm">
-        <span class="truncate flex-1">${a}</span>
-        <button onclick="hapusAnggota('${a}')" class="bg-red-500 px-3 py-1 rounded-lg text-[10px] ml-2 shrink-0">Hapus</button>
+      <div class="glass rounded-lg p-2 flex justify-between items-center text-xs">
+        <span class="truncate flex-1 mr-2">${a}</span>
+        <button onclick="hapusAnggota('${a}')" class="bg-red-500 px-2 py-1 rounded text- shrink-0">Hapus</button>
       </div>
-    `).join('') : '<div class="text-center opacity-60 text-xs py-4">Semua sudah dapat</div>';
+    `).join('') : '<div class="text-center opacity-60 text-xs py-3">Semua sudah dapat</div>';
     
   document.getElementById('listSudah').innerHTML = data.pemenang.length?
     data.pemenang.map(p => `
-      <div class="glass rounded-xl p-2 flex justify-between items-center text-sm">
-        <span class="truncate flex-1">${p.nama}</span>
-        <span class="bg-yellow-500 text-black px-2 py-1 rounded-lg text-[10px] font-bold ml-2 shrink-0">Putaran ${p.putaran}</span>
+      <div class="glass rounded-lg p-2 flex justify-between items-center text-xs">
+        <span class="truncate flex-1 mr-2">${p.nama}</span>
+        <span class="bg-yellow-500 text-black px-2 py-1 rounded text- font-bold shrink-0">Putaran ${p.putaran}</span>
       </div>
-    `).join('') : '<div class="text-center opacity-60 text-xs py-4">Belum ada pemenang</div>';
+    `).join('') : '<div class="text-center opacity-60 text-xs py-3">Belum ada pemenang</div>';
 }
+  <div class="text-center text-white text-xs opacity-60 pb-3">Made with ❤️ by semb</div>
+</div>
 
 render();
 </script>
