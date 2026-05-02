@@ -1,174 +1,324 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ARISAN DIGITAL</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-    body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; color: #333; }
-    .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-    h1 { text-align: center; color: #764ba2; margin-bottom: 5px; }
-    .subtitle { text-align: center; color: #666; margin-bottom: 20px; font-size: 14px; }
-    .stats { display: flex; justify-content: space-around; background: #f8f9fa; padding: 15px; border-radius: 12px; margin-bottom: 20px; }
-    .stat-box { text-align: center; }
-    .stat-num { font-size: 24px; font-weight: bold; color: #667eea; }
-    .stat-label { font-size: 12px; color: #666; }
-    .kocok-area { text-align: center; margin: 30px 0; }
-    #btnKocok { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 20px 50px; font-size: 20px; font-weight: bold; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 15px rgba(118,75,162,0.4); transition: 0.3s; }
-    #btnKocok:active { transform: scale(0.95); }
-    #btnKocok:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; }
-    #hasilKocok { margin-top: 20px; font-size: 28px; font-weight: bold; color: #764ba2; min-height: 40px; }
-    .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-    #inputNama { flex: 1; padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; }
-    #btnTambah { background: #28a745; color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; }
-    .list-box { background: #f8f9fa; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
-    .list-title { font-weight: bold; margin-bottom: 10px; color: #764ba2; }
-    .anggota-item { padding: 8px; background: white; margin: 5px 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
-    .sudah-dapat { opacity: 0.6; text-decoration: line-through; }
-    .badge { background: #667eea; color: white; padding: 3px 8px; border-radius: 20px; font-size: 12px; }
-    .btn-hapus { background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 5px; font-size: 12px; cursor: pointer; }
-    .btn-reset { width: 100%; background: #dc3545; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-    .shake { animation: shake 0.5s; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARISAN DIGITAL - Premium</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap');
+  body { font-family: 'Poppins', sans-serif; }
+ .tema-ungu { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+ .tema-ijo { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+ .tema-pink { background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%); }
+ .tema-emas { background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%); }
+ .glass { background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+ .shake { animation: shake 0.5s infinite; }
+  @keyframes shake {
+    0%,100% { transform: translateX(0) rotate(0deg); }
+    25% { transform: translateX(-10px) rotate(-5deg); }
+    75% { transform: translateX(10px) rotate(5deg); }
+  }
+ .confetti { position: fixed; width: 10px; height: 10px; background: #f00; animation: confetti-fall 3s linear; }
+  @keyframes confetti-fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+</style>
 </head>
-<body>
-  <div class="container">
-    <h1>🎯 ARISAN DIGITAL</h1>
-    <p class="subtitle">Kocok Online Anti Curang - Bu RT Senang</p>
-
-    <div class="stats">
-      <div class="stat-box">
-        <div class="stat-num" id="totalAnggota">0</div>
-        <div class="stat-label">Total Anggota</div>
+<body id="body" class="tema-ungu min-h-screen p-4">
+<div class="max-w-2xl mx-auto">
+  
+  <!-- HEADER PREMIUM -->
+  <div class="glass rounded-3xl p-6 mb-4 text-white">
+    <div class="flex justify-between items-center mb-4">
+      <div class="flex items-center gap-3">
+        <img id="logoRT" src="https://cdn-icons-png.flaticon.com/512/4320/4320371.png" class="w-12 h-12 rounded-full bg-white p-1">
+        <div>
+          <h1 id="namaGrup" class="text-2xl font-black">ARISAN DIGITAL PRO MAX</h1>
+          <p class="text-xs opacity-80">Premium Edition - Anti Curang 100%</p>
+        </div>
       </div>
-      <div class="stat-box">
-        <div class="stat-num" id="sudahDapat">0</div>
-        <div class="stat-label">Sudah Dapat</div>
+      <button onclick="gantiTema()" class="glass px-3 py-2 rounded-xl text-xs font-bold">🎨 Tema</button>
+    </div>
+    
+    <!-- STATS -->
+    <div class="grid grid-cols-4 gap-2 text-center">
+      <div class="glass rounded-xl p-2">
+        <div id="totalAnggota" class="text-2xl font-black">0</div>
+        <div class="text-xs">Anggota</div>
       </div>
-      <div class="stat-box">
-        <div class="stat-num" id="sisaAnggota">0</div>
-        <div class="stat-label">Sisa</div>
+      <div class="glass rounded-xl p-2">
+        <div id="sudahDapat" class="text-2xl font-black">0</div>
+        <div class="text-xs">Menang</div>
+      </div>
+      <div class="glass rounded-xl p-2">
+        <div id="sisa" class="text-2xl font-black">0</div>
+        <div class="text-xs">Sisa</div>
+      </div>
+      <div class="glass rounded-xl p-2">
+        <div id="putaran" class="text-2xl font-black">0</div>
+        <div class="text-xs">Putaran</div>
       </div>
     </div>
-
-    <div class="kocok-area">
-      <button id="btnKocok">🎲 KOCOK SEKARANG</button>
-      <div id="hasilKocok"></div>
-    </div>
-
-    <div class="input-group">
-      <input type="text" id="inputNama" placeholder="Masukin nama anggota baru...">
-      <button id="btnTambah">+ Tambah</button>
-    </div>
-
-    <div class="list-box">
-      <div class="list-title">📋 Belum Dapat Arisan</div>
-      <div id="listBelum"></div>
-    </div>
-
-    <div class="list-box">
-      <div class="list-title">✅ Sudah Dapat Arisan</div>
-      <div id="listSudah"></div>
-    </div>
-
-    <button class="btn-reset" onclick="resetArisan()">🔄 RESET PUTARAN BARU</button>
   </div>
 
-  <audio id="drumroll" src="https://www.soundjay.com/misc/sounds/drum-roll-01.mp3"></audio>
-  <audio id="winner" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
+  <!-- TOMBOL KOCOK -->
+  <button id="btnKocok" onclick="kocokArisan()" class="w-full bg-white text-purple-600 font-black text-xl py-6 rounded-3xl shadow-2xl mb-4 active:scale-95 transition">
+    🎲 KOCOK SEKARANG
+  </button>
 
-  <script>
-    let data = JSON.parse(localStorage.getItem('arisanData')) || { anggota: [], pemenang: [] };
+  <!-- HASIL MENANG -->
+  <div id="hasilMenang" class="glass rounded-3xl p-8 mb-4 text-white text-center hidden">
+    <div class="text-sm mb-2">🎉 SELAMAT KEPADA 🎉</div>
+    <div id="namaPemenang" class="text-4xl font-black mb-2"></div>
+    <div class="text-xs opacity-80">Putaran ke-<span id="putaranMenang"></span></div>
+  </div>
 
-    function save() { localStorage.setItem('arisanData', JSON.stringify(data)); render(); }
+  <!-- TAMBAH ANGGOTA -->
+  <div class="glass rounded-3xl p-4 mb-4">
+    <div class="flex gap-2 mb-3">
+      <input id="inputNama" type="text" placeholder="Nama anggota..." class="flex-1 px-4 py-3 rounded-xl text-black" onkeypress="if(event.key==='Enter') tambahAnggota()">
+      <button onclick="tambahAnggota()" class="bg-green-500 text-white px-6 py-3 rounded-xl font-bold">+ Tambah</button>
+    </div>
+    <div class="flex gap-2 text-xs">
+      <button onclick="ubahNamaGrup()" class="glass text-white px-3 py-2 rounded-lg">✏️ Nama Grup</button>
+      <button onclick="uploadLogo()" class="glass text-white px-3 py-2 rounded-lg">🖼️ Logo</button>
+      <button onclick="exportExcel()" class="glass text-white px-3 py-2 rounded-lg">📊 Export</button>
+    </div>
+  </div>
+
+  <!-- LIST ANGGOTA -->
+  <div class="glass rounded-3xl p-4 mb-4 text-white">
+    <h3 class="font-bold mb-3">📋 Belum Dapat Arisan</h3>
+    <div id="listBelum" class="space-y-2 max-h-60 overflow-y-auto"></div>
+  </div>
+
+  <div class="glass rounded-3xl p-4 mb-4 text-white">
+    <h3 class="font-bold mb-3">✅ Sudah Dapat Arisan</h3>
+    <div id="listSudah" class="space-y-2 max-h-60 overflow-y-auto"></div>
+  </div>
+
+  <!-- RESET -->
+  <button onclick="resetPutaran()" class="w-full bg-red-500 text-white font-bold py-4 rounded-3xl mb-4">
+    🔄 RESET PUTARAN BARU
+  </button>
+  
+  <div class="text-center text-white text-xs opacity-60">Made with ❤️ for Bu RT Senang</div>
+</div>
+
+<input type="file" id="inputLogo" accept="image/*" class="hidden" onchange="gantiLogo(event)">
+
+<script>
+let data = JSON.parse(localStorage.getItem('arisanProMax')) || {
+  grup: 'ARISAN DIGITAL PRO MAX',
+  logo: 'https://cdn-icons-png.flaticon.com/512/4320/4320371.png',
+  tema: 'tema-ungu',
+  anggota: [],
+  pemenang: [],
+  putaran: 0
+};
+
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+// SUARA KOCOK GELAS REAL
+function suaraKocokGelas() {
+  for(let i = 0; i < 15; i++) {
+    setTimeout(() => {
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
+      osc.frequency.value = 200 + Math.random() * 400;
+      gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+      osc.start();
+      osc.stop(audioContext.currentTime + 0.1);
+    }, i * 200);
+  }
+}
+
+// SUARA DRUM ROLL
+function suaraDrumRoll() {
+  const osc = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+  osc.connect(gain);
+  gain.connect(audioContext.destination);
+  osc.frequency.value = 100;
+  gain.gain.setValueAtTime(0.5, audioContext.currentTime);
+  osc.start();
+  setTimeout(() => {
+    osc.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 2);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2);
+  }, 100);
+  setTimeout(() => osc.stop(), 2000);
+}
+
+// SUARA JENG JENG WINNER
+function suaraJengJeng() {
+  [523, 659, 784, 1047].forEach((freq, i) => {
+    setTimeout(() => {
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.5, audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+      osc.start();
+      osc.stop(audioContext.currentTime + 0.3);
+    }, i * 150);
+  });
+}
+
+function saveData() {
+  localStorage.setItem('arisanProMax', JSON.stringify(data));
+  render();
+}
+
+function tambahAnggota() {
+  const nama = document.getElementById('inputNama').value.trim();
+  if(!nama) return alert('Isi nama dulu Prof!');
+  if(data.anggota.includes(nama)) return alert('Udah ada namanya!');
+  data.anggota.push(nama);
+  document.getElementById('inputNama').value = '';
+  saveData();
+}
+
+function hapusAnggota(nama) {
+  data.anggota = data.anggota.filter(a => a!== nama);
+  saveData();
+}
+
+async function kocokArisan() {
+  if(data.anggota.length === 0) return alert('Tambah anggota dulu Prof!');
+  
+  const btn = document.getElementById('btnKocok');
+  btn.disabled = true;
+  btn.innerHTML = '🎲 MENGOCOK...';
+  btn.classList.add('shake');
+  
+  // SUARA KOCOK GELAS 3 DETIK
+  suaraKocokGelas();
+  suaraDrumRoll();
+  
+  await new Promise(r => setTimeout(r, 3000));
+  
+  // PILIH PEMENANG
+  const randomIndex = Math.floor(Math.random() * data.anggota.length);
+  const pemenang = data.anggota[randomIndex];
+  
+  // PINDAH KE PEMENANG
+  data.anggota.splice(randomIndex, 1);
+  data.pemenang.push({ nama: pemenang, putaran: data.putaran + 1 });
+  data.putaran++;
+  
+  // SUARA JENG JENG
+  suaraJengJeng();
+  confetti();
+  
+  // TAMPILIN HASIL
+  document.getElementById('hasilMenang').classList.remove('hidden');
+  document.getElementById('namaPemenang').textContent = pemenang;
+  document.getElementById('putaranMenang').textContent = data.putaran;
+  
+  btn.disabled = false;
+  btn.innerHTML = '🎲 KOCOK SEKARANG';
+  btn.classList.remove('shake');
+  
+  saveData();
+  
+  setTimeout(() => {
+    document.getElementById('hasilMenang').classList.add('hidden');
+  }, 5000);
+}
+
+function resetPutaran() {
+  if(!confirm('Reset semua? Anggota yang udah menang bisa ikut lagi.')) return;
+  data.anggota = [...data.anggota,...data.pemenang.map(p => p.nama)];
+  data.pemenang = [];
+  data.putaran = 0;
+  saveData();
+}
+
+function gantiTema() {
+  const tema = ['tema-ungu', 'tema-ijo', 'tema-pink', 'tema-emas'];
+  const current = tema.indexOf(data.tema);
+  data.tema = tema[(current + 1) % tema.length];
+  document.getElementById('body').className = data.tema + ' min-h-screen p-4';
+  saveData();
+}
+
+function ubahNamaGrup() {
+  const nama = prompt('Nama grup arisan:', data.grup);
+  if(nama) {
+    data.grup = nama;
+    saveData();
+  }
+}
+
+function uploadLogo() {
+  document.getElementById('inputLogo').click();
+}
+
+function gantiLogo(e) {
+  const file = e.target.files[0];
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    data.logo = evt.target.result;
+    saveData();
+  }
+  reader.readAsDataURL(file);
+}
+
+function exportExcel() {
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.json_to_sheet([
+   ...data.pemenang.map((p, i) => ({ No: i+1, Nama: p.nama, Status: 'Menang', Putaran: p.putaran })),
+   ...data.anggota.map((a, i) => ({ No: data.pemenang.length + i + 1, Nama: a, Status: 'Belum', Putaran: '-' }))
+  ]);
+  XLSX.utils.book_append_sheet(wb, ws, 'Laporan Arisan');
+  XLSX.writeFile(wb, `Laporan-${data.grup}-${Date.now()}.xlsx`);
+}
+
+function confetti() {
+  for(let i = 0; i < 50; i++) {
+    setTimeout(() => {
+      const div = document.createElement('div');
+      div.className = 'confetti';
+      div.style.left = Math.random() * 100 + '%';
+      div.style.background = `hsl(${Math.random()*360}, 100%, 50%)`;
+      document.body.appendChild(div);
+      setTimeout(() => div.remove(), 3000);
+    }, i * 30);
+  }
+}
+
+function render() {
+  document.getElementById('namaGrup').textContent = data.grup;
+  document.getElementById('logoRT').src = data.logo;
+  document.getElementById('body').className = data.tema + ' min-h-screen p-4';
+  document.getElementById('totalAnggota').textContent = data.anggota.length + data.pemenang.length;
+  document.getElementById('sudahDapat').textContent = data.pemenang.length;
+  document.getElementById('sisa').textContent = data.anggota.length;
+  document.getElementById('putaran').textContent = data.putaran;
+  
+  document.getElementById('listBelum').innerHTML = data.anggota.length? 
+    data.anggota.map(a => `
+      <div class="glass rounded-xl p-3 flex justify-between items-center">
+        <span>${a}</span>
+        <button onclick="hapusAnggota('${a}')" class="bg-red-500 px-3 py-1 rounded-lg text-xs">Hapus</button>
+      </div>
+    `).join('') : '<div class="text-center opacity-60 text-sm">Semua sudah dapat</div>';
     
-    function render() {
-      const belum = data.anggota.filter(a => !data.pemenang.find(p => p.nama === a));
-      const sudah = data.pemenang;
-      
-      document.getElementById('totalAnggota').textContent = data.anggota.length;
-      document.getElementById('sudahDapat').textContent = sudah.length;
-      document.getElementById('sisaAnggota').textContent = belum.length;
-      document.getElementById('btnKocok').disabled = belum.length === 0;
+  document.getElementById('listSudah').innerHTML = data.pemenang.length?
+    data.pemenang.map(p => `
+      <div class="glass rounded-xl p-3 flex justify-between items-center">
+        <span>${p.nama}</span>
+        <span class="bg-yellow-500 text-black px-3 py-1 rounded-lg text-xs font-bold">Putaran ${p.putaran}</span>
+      </div>
+    `).join('') : '<div class="text-center opacity-60 text-sm">Belum ada pemenang</div>';
+}
 
-      document.getElementById('listBelum').innerHTML = belum.length ? belum.map(nama => `
-        <div class="anggota-item">
-          <span>${nama}</span>
-          <button class="btn-hapus" onclick="hapusAnggota('${nama}')">Hapus</button>
-        </div>
-      `).join('') : '<div style="text-align:center;color:#999;">Semua sudah dapat</div>';
-
-      document.getElementById('listSudah').innerHTML = sudah.length ? sudah.map((p, i) => `
-        <div class="anggota-item sudah-dapat">
-          <span>${p.nama}</span>
-          <span class="badge">Putaran ${i+1}</span>
-        </div>
-      `).join('') : '<div style="text-align:center;color:#999;">Belum ada pemenang</div>';
-    }
-
-    function tambahAnggota() {
-      const nama = document.getElementById('inputNama').value.trim();
-      if (!nama) return alert('Isi nama dulu Prof!');
-      if (data.anggota.includes(nama)) return alert('Nama udah ada!');
-      data.anggota.push(nama);
-      document.getElementById('inputNama').value = '';
-      save();
-    }
-
-    function hapusAnggota(nama) {
-      if (!confirm(`Hapus ${nama} dari arisan?`)) return;
-      data.anggota = data.anggota.filter(a => a !== nama);
-      data.pemenang = data.pemenang.filter(p => p.nama !== nama);
-      save();
-    }
-
-    function kocokArisan() {
-      const belum = data.anggota.filter(a => !data.pemenang.find(p => p.nama === a));
-      if (belum.length === 0) return alert('Semua anggota sudah dapat arisan!');
-      
-      const btn = document.getElementById('btnKocok');
-      const hasil = document.getElementById('hasilKocok');
-      btn.disabled = true;
-      
-      // Efek drumroll
-      document.getElementById('drumroll').play();
-      hasil.textContent = 'Dug... Dug... Dug...';
-      hasil.classList.add('shake');
-      
-      let counter = 0;
-      const interval = setInterval(() => {
-        hasil.textContent = belum[Math.floor(Math.random() * belum.length)];
-        counter++;
-        if (counter > 20) {
-          clearInterval(interval);
-          const pemenang = belum[Math.floor(Math.random() * belum.length)];
-          hasil.textContent = `🎉 ${pemenang} 🎉`;
-          hasil.classList.remove('shake');
-          document.getElementById('winner').play();
-          
-          setTimeout(() => {
-            data.pemenang.push({ nama: pemenang, tanggal: new Date().toLocaleDateString('id-ID') });
-            save();
-            btn.disabled = false;
-          }, 1500);
-        }
-      }, 100);
-    }
-
-    function resetArisan() {
-      if (!confirm('Yakin mau reset? Semua data pemenang bakal dihapus. Anggota tetap ada.')) return;
-      data.pemenang = [];
-      save();
-      document.getElementById('hasilKocok').textContent = '';
-    }
-
-    document.getElementById('btnTambah').onclick = tambahAnggota;
-    document.getElementById('btnKocok').onclick = kocokArisan;
-    document.getElementById('inputNama').onkeypress = e => e.key === 'Enter' && tambahAnggota();
-    
-    render();
-  </script>
+render();
+</script>
 </body>
-        </html>
+  </html>
