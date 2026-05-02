@@ -25,10 +25,24 @@
 .confetti { position: fixed; width: 8px; height: 8px; animation: confetti-fall 3s linear; z-index: 9999; }
   @keyframes confetti-fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
   button:active { transform: scale(0.97); }
+ .modal { background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
 </style>
 </head>
 <body id="body" class="tema-ungu min-h-screen w-screen">
-<div class="w-full p-2">
+
+<!-- MODAL PASSWORD -->
+<div id="modalPassword" class="fixed inset-0 modal z-50 flex items-center justify-center p-4">
+  <div class="glass rounded-xl p-6 w-full max-w-sm text-white text-center">
+    <div class="text-4xl mb-3">🔒</div>
+    <h2 class="text-xl font-black mb-2">ROOM TERKUNCI</h2>
+    <p class="text-sm opacity-80 mb-4">Masukkan password RT untuk masuk</p>
+    <input id="inputPassword" type="password" placeholder="Password..." class="w-full px-4 py-3 rounded-xl text-black text-center mb-3" onkeypress="if(event.key==='Enter') cekPassword()">
+    <button onclick="cekPassword()" class="w-full bg-green-500 text-white py-3 rounded-xl font-bold">MASUK</button>
+    <p class="text-xs opacity-60 mt-3">Password default: <b>rt03</b></p>
+  </div>
+</div>
+
+<div class="w-full p-2 hidden" id="mainApp">
   
   <!-- HEADER PREMIUM -->
   <div class="glass rounded-xl p-3 mb-2 text-white">
@@ -40,7 +54,10 @@
           <p class="text-xs opacity-80">Anti Curang 100%</p>
         </div>
       </div>
-      <button onclick="gantiTema()" class="glass px-2 py-2 rounded-lg text-xs font-bold shrink-0">🎨</button>
+      <div class="flex gap-1">
+        <button onclick="gantiPassword()" class="glass px-2 py-2 rounded-lg text-xs font-bold shrink-0">🔑</button>
+        <button onclick="gantiTema()" class="glass px-2 py-2 rounded-lg text-xs font-bold shrink-0">🎨</button>
+      </div>
     </div>
     
     <!-- STATS -->
@@ -50,12 +67,12 @@
         <div class="text-xs">Anggota</div>
       </div>
       <div class="glass rounded-lg p-1.5">
-        <div id="sudahDapat" class="text-lg font-black">0</div>
-        <div class="text-xs">Menang</div>
+        <div id="sudahBayar" class="text-lg font-black text-green-300">0</div>
+        <div class="text-xs">Lunas</div>
       </div>
       <div class="glass rounded-lg p-1.5">
-        <div id="sisa" class="text-lg font-black">0</div>
-        <div class="text-xs">Sisa</div>
+        <div id="belumBayar" class="text-lg font-black text-red-300">0</div>
+        <div class="text-xs">Hutang</div>
       </div>
       <div class="glass rounded-lg p-1.5">
         <div id="putaran" class="text-lg font-black">0</div>
@@ -80,10 +97,11 @@
   <div class="glass rounded-xl p-3 mb-2">
     <input id="inputNama" type="text" placeholder="Nama anggota..." class="w-full px-3 py-3 rounded-xl text-black text-sm mb-2" onkeypress="if(event.key==='Enter') tambahAnggota()">
     <button onclick="tambahAnggota()" class="w-full bg-green-500 text-white py-3 rounded-xl font-bold text-sm mb-2">+ TAMBAH ANGGOTA</button>
-    <div class="grid grid-cols-3 gap-1.5 text-xs">
+    <div class="grid grid-cols-4 gap-1.5 text-xs">
       <button onclick="ubahNamaGrup()" class="glass text-white px-1 py-2 rounded-lg">✏️ Grup</button>
       <button onclick="uploadLogo()" class="glass text-white px-1 py-2 rounded-lg">🖼️ Logo</button>
       <button onclick="exportExcel()" class="glass text-white px-1 py-2 rounded-lg">📊 Export</button>
+      <button onclick="lihatHistory()" class="glass text-white px-1 py-2 rounded-lg">📜 History</button>
     </div>
   </div>
 
@@ -113,6 +131,17 @@
   
 </div>
 
+<!-- MODAL HISTORY -->
+<div id="modalHistory" class="fixed inset-0 modal z-50 hidden items-center justify-center p-4">
+  <div class="glass rounded-xl p-4 w-full max-w-sm text-white max-h-[80vh] flex flex-col">
+    <div class="flex justify-between items-center mb-3">
+      <h2 class="text-lg font-black">📜 History Kocokan</h2>
+      <button onclick="tutupHistory()" class="bg-red-500 px-3 py-1 rounded-lg text-sm">Tutup</button>
+    </div>
+    <div id="listHistory" class="space-y-2 overflow-y-auto"></div>
+  </div>
+</div>
+
 <input type="file" id="inputLogo" accept="image/*" class="hidden" onchange="gantiLogo(event)">
 
 <script>
@@ -120,12 +149,42 @@ let data = JSON.parse(localStorage.getItem('arisanProMax')) || {
   grup: 'ARISAN DIGITAL PRO MAX',
   logo: 'https://cdn-icons-png.flaticon.com/512/4320/4320371.png',
   tema: 'tema-ungu',
+  password: 'rt03',
   anggota: [],
   pemenang: [],
+  history: [],
   putaran: 0
 };
 
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+// CEK PASSWORD PAS BUKA
+if(localStorage.getItem('arisanLogin') === 'true') {
+  document.getElementById('modalPassword').classList.add('hidden');
+  document.getElementById('mainApp').classList.remove('hidden');
+}
+
+function cekPassword() {
+  const pass = document.getElementById('inputPassword').value;
+  if(pass === data.password) {
+    localStorage.setItem('arisanLogin', 'true');
+    document.getElementById('modalPassword').classList.add('hidden');
+    document.getElementById('mainApp').classList.remove('hidden');
+  } else {
+    alert('Password salah! Default: rt03');
+  }
+}
+
+function gantiPassword() {
+  const passLama = prompt('Password lama:');
+  if(passLama!== data.password) return alert('Password lama salah!');
+  const passBaru = prompt('Password baru:');
+  if(passBaru && passBaru.length >= 3) {
+    data.password = passBaru;
+    saveData();
+    alert('Password berhasil diganti jadi: ' + passBaru);
+  }
+}
 
 function suaraKocokGelas() {
   for(let i = 0; i < 25; i++) {
@@ -190,14 +249,20 @@ function saveData() {
 function tambahAnggota() {
   const nama = document.getElementById('inputNama').value.trim();
   if(!nama) return;
-  if(data.anggota.includes(nama)) return alert('Nama sudah ada!');
-  data.anggota.push(nama);
+  if(data.anggota.find(a => a.nama === nama)) return alert('Nama sudah ada!');
+  data.anggota.push({nama: nama, bayar: false});
   document.getElementById('inputNama').value = '';
   saveData();
 }
 
 function hapusAnggota(nama) {
-  data.anggota = data.anggota.filter(a => a!== nama);
+  data.anggota = data.anggota.filter(a => a.nama!== nama);
+  saveData();
+}
+
+function toggleBayar(nama) {
+  const anggota = data.anggota.find(a => a.nama === nama);
+  if(anggota) anggota.bayar =!anggota.bayar;
   saveData();
 }
 
@@ -218,14 +283,20 @@ async function kocokArisan() {
   const pemenang = data.anggota[randomIndex];
   
   data.anggota.splice(randomIndex, 1);
-  data.pemenang.push({ nama: pemenang, putaran: data.putaran + 1 });
+  data.pemenang.push({ nama: pemenang.nama, putaran: data.putaran + 1, bayar: pemenang.bayar });
+  data.history.push({
+    nama: pemenang.nama,
+    putaran: data.putaran + 1,
+    waktu: new Date().toLocaleString('id-ID'),
+    bayar: pemenang.bayar
+  });
   data.putaran++;
   
   suaraJengJeng();
   confetti();
   
   document.getElementById('hasilMenang').classList.remove('hidden');
-  document.getElementById('namaPemenang').textContent = pemenang;
+  document.getElementById('namaPemenang').textContent = pemenang.nama;
   document.getElementById('putaranMenang').textContent = data.putaran;
   
   btn.disabled = false;
@@ -238,7 +309,7 @@ async function kocokArisan() {
 
 function resetPutaran() {
   if(!confirm('Reset putaran? Anggota yang sudah menang bisa ikut lagi.')) return;
-  data.anggota = [...data.anggota,...data.pemenang.map(p => p.nama)];
+  data.anggota = [...data.anggota,...data.pemenang.map(p => ({nama: p.nama, bayar: false}))];
   data.pemenang = [];
   data.putaran = 0;
   saveData();
@@ -247,6 +318,7 @@ function resetPutaran() {
 function hapusSemuaData() {
   if(!confirm('YAKIN HAPUS SEMUA? Nama grup, logo, anggota bakal hilang semua. Ga bisa dibalikin!')) return;
   localStorage.removeItem('arisanProMax');
+  localStorage.removeItem('arisanLogin');
   location.reload();
 }
 
@@ -284,11 +356,34 @@ function gantiLogo(e) {
 function exportExcel() {
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.json_to_sheet([
-...data.pemenang.map((p, i) => ({ No: i+1, Nama: p.nama, Status: 'Menang', Putaran: p.putaran })),
-...data.anggota.map((a, i) => ({ No: data.pemenang.length + i + 1, Nama: a, Status: 'Belum', Putaran: '-' }))
+...data.pemenang.map((p, i) => ({ No: i+1, Nama: p.nama, Status: 'Menang', Putaran: p.putaran, Iuran: p.bayar? 'Lunas' : 'Belum' })),
+...data.anggota.map((a, i) => ({ No: data.pemenang.length + i + 1, Nama: a.nama, Status: 'Belum', Putaran: '-', Iuran: a.bayar? 'Lunas' : 'Belum' }))
   ]);
   XLSX.utils.book_append_sheet(wb, ws, 'Laporan Arisan');
   XLSX.writeFile(wb, `Laporan-${data.grup}-${Date.now()}.xlsx`);
+}
+
+function lihatHistory() {
+  document.getElementById('modalHistory').classList.remove('hidden');
+  document.getElementById('modalHistory').classList.add('flex');
+  document.getElementById('listHistory').innerHTML = data.history.length?
+    data.history.slice().reverse().map(h => `
+      <div class="glass rounded-lg p-2 text-xs">
+        <div class="flex justify-between items-center mb-1">
+          <span class="font-bold">${h.nama}</span>
+          <span class="bg-yellow-500 text-black px-2 py-0.5 rounded font-bold">Putaran ${h.putaran}</span>
+        </div>
+        <div class="opacity-70 text-xs">${h.waktu}</div>
+        <div class="mt-1 ${h.bayar? 'text-green-300' : 'text-red-300'}">
+          ${h.bayar? '✅ Iuran Lunas' : '❌ Belum Bayar'}
+        </div>
+      </div>
+    `).join('') : '<div class="text-center opacity-60 text-sm py-5">Belum ada history kocokan</div>';
+}
+
+function tutupHistory() {
+  document.getElementById('modalHistory').classList.add('hidden');
+  document.getElementById('modalHistory').classList.remove('flex');
 }
 
 function confetti() {
@@ -308,24 +403,39 @@ function render() {
   document.getElementById('namaGrup').textContent = data.grup;
   document.getElementById('logoRT').src = data.logo;
   document.getElementById('body').className = data.tema + ' min-h-screen w-screen';
-  document.getElementById('totalAnggota').textContent = data.anggota.length + data.pemenang.length;
-  document.getElementById('sudahDapat').textContent = data.pemenang.length;
-  document.getElementById('sisa').textContent = data.anggota.length;
+  
+  const totalSemua = data.anggota.length + data.pemenang.length;
+  const sudahBayar = data.anggota.filter(a => a.bayar).length + data.pemenang.filter(p => p.bayar).length;
+  const belumBayar = totalSemua - sudahBayar;
+  
+  document.getElementById('totalAnggota').textContent = totalSemua;
+  document.getElementById('sudahBayar').textContent = sudahBayar;
+  document.getElementById('belumBayar').textContent = belumBayar;
   document.getElementById('putaran').textContent = data.putaran;
   
   document.getElementById('listBelum').innerHTML = data.anggota.length? 
     data.anggota.map(a => `
-      <div class="glass rounded-lg p-2 flex justify-between items-center text-xs">
-        <span class="truncate flex-1 mr-2">${a}</span>
-        <button onclick="hapusAnggota('${a}')" class="bg-red-500 px-2 py-1 rounded text-xs shrink-0">Hapus</button>
+      <div class="glass rounded-lg p-2 text-xs">
+        <div class="flex justify-between items-center mb-1">
+          <span class="truncate flex-1 mr-2">${a.nama}</span>
+          <button onclick="hapusAnggota('${a.nama}')" class="bg-red-500 px-2 py-1 rounded text-xs shrink-0">Hapus</button>
+        </div>
+        <button onclick="toggleBayar('${a.nama}')" class="w-full py-1 rounded text-xs font-bold ${a.bayar? 'bg-green-500' : 'bg-red-500'}">
+          ${a.bayar? '✅ Lunas' : '❌ Belum Bayar'}
+        </button>
       </div>
     `).join('') : '<div class="text-center opacity-60 text-xs py-3">Semua sudah dapat</div>';
     
   document.getElementById('listSudah').innerHTML = data.pemenang.length?
     data.pemenang.map(p => `
-      <div class="glass rounded-lg p-2 flex justify-between items-center text-xs">
-        <span class="truncate flex-1 mr-2">${p.nama}</span>
-        <span class="bg-yellow-500 text-black px-2 py-1 rounded text-xs font-bold shrink-0">Putaran ${p.putaran}</span>
+      <div class="glass rounded-lg p-2 text-xs">
+        <div class="flex justify-between items-center mb-1">
+          <span class="truncate flex-1 mr-2">${p.nama}</span>
+          <span class="bg-yellow-500 text-black px-2 py-1 rounded text-xs font-bold shrink-0">Putaran ${p.putaran}</span>
+        </div>
+        <div class="text-xs ${p.bayar? 'text-green-300' : 'text-red-300'}">
+          ${p.bayar? '✅ Iuran Lunas' : '❌ Belum Bayar'}
+        </div>
       </div>
     `).join('') : '<div class="text-center opacity-60 text-xs py-3">Belum ada pemenang</div>';
 }
